@@ -12,6 +12,7 @@ type Err = Box<dyn std::error::Error>;
 type Result<T> = std::result::Result<T, Err>;
 
 pub mod app;
+pub mod ui;
 
 use app::App;
 
@@ -59,7 +60,7 @@ fn run() -> Result<()> {
     let mut app = App::new();
 
     // Main application loop
-    loop {
+    while !app.should_quit {
         // Render the UI
         terminal.draw(|f| ui(&app, f))?;
 
