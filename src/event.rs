@@ -1,4 +1,3 @@
-use crossterm::event::{KeyEvent, MouseEvent};
 /// Terminal events.
 #[derive(Clone, Copy, Debug)]
 pub enum Event {
@@ -12,7 +11,11 @@ pub enum Event {
     Resize(u16, u16),
 }
 
-use std::{sync::mpsc, thread};
+use std::{
+    sync::mpsc,
+    thread,
+    time::{Duration, Instant},
+};
 
 /// Terminal event handler.
 #[derive(Debug)]
@@ -26,12 +29,6 @@ pub struct EventHandler {
     #[allow(dead_code)]
     handler: thread::JoinHandle<()>,
 }
-
-use std::{
-    sync::mpsc,
-    thread,
-    time::{Duration, Instant},
-};
 
 use color_eyre::Result;
 use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
@@ -61,21 +58,15 @@ impl EventHandler {
                                     Ok(()) // ignore KeyEventKind::Release on windows
                                 }
                             }
-                            CrosstermEvent::Mouse(e) => {
-                                sender.send(Event::Mouse(e))
-                            }
-                            CrosstermEvent::Resize(w, h) => {
-                                sender.send(Event::Resize(w, h))
-                            }
+                            CrosstermEvent::Mouse(e) => sender.send(Event::Mouse(e)),
+                            CrosstermEvent::Resize(w, h) => sender.send(Event::Resize(w, h)),
                             _ => unimplemented!(),
                         }
                         .expect("failed to send terminal event")
                     }
 
                     if last_tick.elapsed() >= tick_rate {
-                        sender
-                            .send(Event::Tick)
-                            .expect("failed to send tick event");
+                        sender.send(Event::Tick).expect("failed to send tick event");
                         last_tick = Instant::now();
                     }
                 }
