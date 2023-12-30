@@ -11,10 +11,9 @@ use ratatui::{
 type Err = Box<dyn std::error::Error>;
 type Result<T> = std::result::Result<T, Err>;
 
-struct App {
-    counter: i64,
-    should_quit: bool,
-}
+pub mod app;
+
+use app::App;
 
 fn startup() -> Result<()> {
     enable_raw_mode()?;
@@ -40,10 +39,10 @@ fn update(app: &mut App) -> Result<()> {
         if let Key(key) = event::read()? {
             if key.kind == event::KeyEventKind::Press {
                 match key.code {
-                    Char('j') => app.counter += 1,
-                    Char('k') => app.counter -= 1,
-                    Char('q') => app.should_quit = true,
-                    _ => {}
+                    Char('j') => app.increment_counter(),
+                    Char('k') => app.decrement_counter(),
+                    Char('q') => app.quit(),
+                    _ => app.tick()
                 }
             }
         }
@@ -57,10 +56,7 @@ fn run() -> Result<()> {
 
     // Define our counter variable
     // This is the state of our application
-    let mut app = App {
-        counter: 0,
-        should_quit: false,
-    };
+    let mut app = App::new();
 
     // Main application loop
     loop {
