@@ -1,6 +1,9 @@
+use ratatui::widgets::ListState;
+
 #[derive(Debug, Default)]
 pub struct App {
     pub counter: i64,
+    pub items: ListState,
     pub should_quit: bool,
 }
 
