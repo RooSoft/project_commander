@@ -4,6 +4,13 @@ struct File {
     path: String,
     is_new: bool,
     is_ignored: bool,
+} 
+
+pub fn is_git_repo(folder: &str) -> bool {
+    match Repository::open(folder) {
+        Ok(_) => true,
+        Err(_) => false
+    }
 }
 
 pub fn list_files(folder: &str) {

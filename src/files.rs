@@ -1,3 +1,4 @@
+use crate::git;
 use std::fs;
 use std::io;
 
@@ -11,11 +12,18 @@ pub fn list_folders(parent: &str) -> io::Result<()> {
         let name = path.file_name().unwrap().to_str().unwrap();
 
         if name != ".git" && name != "target" && name != ".." {
-            println!("{}/{}", parent, name);
+            let relative_path = format!("{}/{}", parent, name);
 
-            match list_folders(&format!("{}/{}", parent, name)) {
-                Ok(()) => (),
-                Err(e) => { dbg!(&e); () }
+            if git::is_git_repo(&relative_path) {
+                println!("{}/{}", parent, name);
+            } else {
+                match list_folders(&relative_path) {
+                    Ok(()) => (),
+                    Err(e) => {
+                        dbg!(&e);
+                        ()
+                    }
+                }
             }
         }
     }
