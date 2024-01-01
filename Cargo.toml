@@ -10,3 +10,4 @@ ratatui = { version = "0.25.0", features = ["all-widgets"]}
 crossterm = "0.27"
 anyhow = "1.0"
 color-eyre = "0.6"
+git2 = "0.18"

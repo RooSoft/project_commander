@@ -10,6 +10,8 @@ pub mod ui;
 /// Terminal user interface.
 pub mod tui;
 
+pub mod git;
+
 /// Application updater.
 pub mod update;
 use app::App;
@@ -20,6 +22,8 @@ use tui::Tui;
 use update::update;
 
 fn main() -> Result<()> {
+    git::list_files(".");
+
     // Create an application.
     let mut app = App::new();
 
