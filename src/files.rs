@@ -10,10 +10,13 @@ pub fn list_folders(parent: &str) -> io::Result<()> {
         let path = path_buf.as_path();
         let name = path.file_name().unwrap().to_str().unwrap();
 
-        if name != ".git" && name != "target" {
-            println!("{}", name);
+        if name != ".git" && name != "target" && name != ".." {
+            println!("{}/{}", parent, name);
 
-            let _ = list_folders(name);
+            match list_folders(&format!("{}/{}", parent, name)) {
+                Ok(()) => (),
+                Err(e) => { dbg!(&e); () }
+            }
         }
     }
 
