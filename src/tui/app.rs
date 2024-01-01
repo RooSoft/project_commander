@@ -13,20 +13,36 @@ pub struct App {
 impl App {
     /// Constructs a new instance of [`App`].
     pub fn new(parent_folder: &str) -> Self {
+        let mut items = ListState::default();
+        items.select(Some(0));
+
         App{
             counter: 0,
             repositories: get_repositories(parent_folder),
-            items: ListState::default(),
+            items,
             should_quit: false
         }
     }
 
     /// Handles the tick event of the terminal.
-    pub fn tick(&self) {}
+    pub fn tick(&self) {
+    }
 
     /// Set should_quit to true to quit the application.
     pub fn quit(&mut self) {
         self.should_quit = true;
+    }
+
+    pub fn select_up(&mut self) {
+        let selected = self.items.selected().unwrap();
+        self.items.select(Some(selected - 1));
+    }
+
+    pub fn select_down(&mut self) {
+        let selected = self.items.selected().unwrap();
+        let new_selection = Some(selected + 1);
+
+        self.items.select(new_selection);
     }
 
     pub fn increment_counter(&mut self) {

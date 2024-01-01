@@ -12,8 +12,9 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(f.size());
 
-    app.items.select(Some(0));
-
+    app.items.select(app.items.selected());
+    app.tick();
+    
     f.render_stateful_widget(
         List::new(app.repositories.clone())
             .block(Block::default().borders(Borders::ALL))
