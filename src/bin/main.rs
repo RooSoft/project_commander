@@ -17,7 +17,8 @@ fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
 
     // git::list_files(".");
-    let _ = files::list_folders(&args[1]);
+    let repos = files::list_folders(&args[1]);
+    dbg!(&repos);
 
     // Create an application.
     let mut app = App::new();
