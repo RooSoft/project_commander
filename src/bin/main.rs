@@ -1,25 +1,13 @@
-/// Application.
-pub mod app;
-
-/// Terminal events handler.
-pub mod event;
-
-/// Widget renderer.
-pub mod ui;
-
-/// Terminal user interface.
-pub mod tui;
-
-pub mod git;
-
-/// Application updater.
-pub mod update;
-use app::App;
+use project_commander::tui::{
+    app::App,
+    event::{Event, EventHandler},
+    tui::Tui,
+    update::update
+};
 use color_eyre::Result;
-use event::{Event, EventHandler};
 use ratatui::{backend::CrosstermBackend, Terminal};
-use tui::Tui;
-use update::update;
+
+use project_commander::git;
 
 fn main() -> Result<()> {
     git::list_files(".");
