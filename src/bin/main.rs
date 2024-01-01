@@ -9,12 +9,15 @@ use project_commander::{
     },
 };
 
+use std::env;
 use color_eyre::Result;
 use ratatui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<()> {
+    let args: Vec<String> = env::args().collect();
+
     // git::list_files(".");
-    let _ = files::list_folders("..");
+    let _ = files::list_folders(&args[1]);
 
     // Create an application.
     let mut app = App::new();
