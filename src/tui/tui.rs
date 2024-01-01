@@ -9,12 +9,14 @@ use crossterm::{
 pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
 
 use crate::tui::{app::App, event::EventHandler, ui};
+use crate::files;
 
 /// Representation of a terminal user interface.
 ///
 /// It is responsible for setting up the terminal,
 /// initializing the interface and handling the draw events.
 pub struct Tui {
+    repositories: Vec<String>,
     /// Interface to the Terminal.
     terminal: CrosstermTerminal,
     /// Terminal event handler.
@@ -23,8 +25,13 @@ pub struct Tui {
 
 impl Tui {
     /// Constructs a new instance of [`Tui`].
-    pub fn new(terminal: CrosstermTerminal, events: EventHandler) -> Self {
-        Self { terminal, events }
+    pub fn new(terminal: CrosstermTerminal, events: EventHandler, parent_folder: &str) -> Self {
+        let repositories = get_repositories(&parent_folder);
+        Self {
+            terminal,
+            events,
+            repositories,
+        }
     }
 
     /// Initializes the terminal interface.
@@ -71,7 +78,17 @@ impl Tui {
     /// [`Draw`]: tui::Terminal::draw
     /// [`rendering`]: crate::ui:render
     pub fn draw(&mut self, app: &mut App) -> Result<()> {
-        self.terminal.draw(|frame| ui::render(app, frame))?;
+        self.terminal
+            .draw(|frame| ui::render(app, frame, &self.repositories))?;
         Ok(())
     }
+}
+
+fn get_repositories(parent: &str) -> Vec<String> {
+    let repos = files::list_folders(parent).unwrap();
+
+    repos
+        .iter()
+        .map(|(path, _repository)| path.clone())
+        .collect::<Vec<String>>()
 }

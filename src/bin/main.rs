@@ -1,5 +1,5 @@
 use project_commander::{
-    files,
+    // files,
     // git,
     tui::{
         app::App,
@@ -17,9 +17,6 @@ fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
 
     // git::list_files(".");
-    let repos = files::list_folders(&args[1]).unwrap();
-    let repo_paths = repos.iter().map(|(path, _repository)| path.as_str()).collect::<Vec<&str>>();
-    dbg!(&repo_paths);
 
     // Create an application.
     let mut app = App::new();
@@ -28,7 +25,7 @@ fn main() -> Result<()> {
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
     let events = EventHandler::new(250);
-    let mut tui = Tui::new(terminal, events);
+    let mut tui = Tui::new(terminal, events, &args[1]);
     tui.enter()?;
 
     // Start the main loop.
