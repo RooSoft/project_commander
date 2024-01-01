@@ -1,16 +1,24 @@
 use ratatui::widgets::ListState;
 
+use crate::files;
+
 #[derive(Debug, Default)]
 pub struct App {
     pub counter: i64,
+    pub repositories: Vec<String>,
     pub items: ListState,
     pub should_quit: bool,
 }
 
 impl App {
     /// Constructs a new instance of [`App`].
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(parent_folder: &str) -> Self {
+        App{
+            counter: 0,
+            repositories: get_repositories(parent_folder),
+            items: ListState::default(),
+            should_quit: false
+        }
     }
 
     /// Handles the tick event of the terminal.
@@ -32,6 +40,16 @@ impl App {
             self.counter = res;
         }
     }
+}
+
+
+fn get_repositories(parent: &str) -> Vec<String> {
+    let repos = files::list_folders(parent).unwrap();
+
+    repos
+        .iter()
+        .map(|(path, _repository)| path.clone())
+        .collect::<Vec<String>>()
 }
 
 #[cfg(test)]

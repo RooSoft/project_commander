@@ -15,17 +15,18 @@ use ratatui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
+    let parent_folder = &args[1];
 
     // git::list_files(".");
 
     // Create an application.
-    let mut app = App::new();
+    let mut app = App::new(&parent_folder);
 
     // Initialize the terminal user interface.
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
     let events = EventHandler::new(250);
-    let mut tui = Tui::new(terminal, events, &args[1]);
+    let mut tui = Tui::new(terminal, events);
     tui.enter()?;
 
     // Start the main loop.

@@ -6,7 +6,7 @@ use ratatui::{
 
 use crate::tui::app::App;
 
-pub fn render(app: &mut App, f: &mut Frame, repositories: &Vec<String>) {
+pub fn render(app: &mut App, f: &mut Frame) {
     let layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
@@ -15,7 +15,7 @@ pub fn render(app: &mut App, f: &mut Frame, repositories: &Vec<String>) {
     app.items.select(Some(0));
 
     f.render_stateful_widget(
-        List::new(repositories.clone())
+        List::new(app.repositories.clone())
             .block(Block::default().borders(Borders::ALL))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")
