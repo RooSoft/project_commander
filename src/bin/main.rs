@@ -1,16 +1,20 @@
-use project_commander::tui::{
-    app::App,
-    event::{Event, EventHandler},
-    tui::Tui,
-    update::update
+use project_commander::{
+    files,
+    // git,
+    tui::{
+        app::App,
+        event::{Event, EventHandler},
+        tui::Tui,
+        update::update,
+    },
 };
+
 use color_eyre::Result;
 use ratatui::{backend::CrosstermBackend, Terminal};
 
-use project_commander::git;
-
 fn main() -> Result<()> {
-    git::list_files(".");
+    // git::list_files(".");
+    let _ = files::list_folders(".");
 
     // Create an application.
     let mut app = App::new();
