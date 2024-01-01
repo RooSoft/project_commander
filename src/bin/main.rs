@@ -14,7 +14,7 @@ use ratatui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<()> {
     // git::list_files(".");
-    let _ = files::list_folders(".");
+    let _ = files::list_folders("..");
 
     // Create an application.
     let mut app = App::new();
