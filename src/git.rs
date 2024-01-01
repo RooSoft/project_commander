@@ -6,10 +6,10 @@ struct File {
     is_ignored: bool,
 } 
 
-pub fn is_git_repo(folder: &str) -> bool {
+pub fn get_repository(folder: &str) -> Option<Repository> {
     match Repository::open(folder) {
-        Ok(_) => true,
-        Err(_) => false
+        Ok(repository) => Some(repository),
+        Err(_) => None
     }
 }
 
