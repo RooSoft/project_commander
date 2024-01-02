@@ -15,10 +15,22 @@ pub fn render(app: &mut App, f: &mut Frame) {
     app.items.select(app.items.selected());
     app.tick();
 
-    let formatted_repositories = app.repositories.iter().map(|(r, t)| {
-        format!("{} - {}", t, r)
-    }).collect::<Vec<String>>();
-    
+    let formatted_repositories = app
+        .repositories
+        .iter()
+        .map(|(path, timestamp)| {
+            let duration = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("SystemTime before UNIX EPOCH!")
+                .checked_sub(std::time::Duration::from_secs(*timestamp as u64))
+                .expect("Duration calculation failed");
+
+            let formatted_duration = humantime::format_duration(duration);
+
+            format!("{:>30} - {}", formatted_duration, path)
+        })
+        .collect::<Vec<String>>();
+
     f.render_stateful_widget(
         List::new(formatted_repositories)
             .block(Block::default().borders(Borders::ALL))
