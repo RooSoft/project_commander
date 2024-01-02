@@ -15,7 +15,9 @@ pub fn render(app: &mut App, f: &mut Frame) {
     app.items.select(app.items.selected());
     app.tick();
 
-    let formatted_repositories = app.repositories.iter().map(|(r, _)| r.clone()).collect::<Vec<String>>();
+    let formatted_repositories = app.repositories.iter().map(|(r, t)| {
+        format!("{} - {}", t, r)
+    }).collect::<Vec<String>>();
     
     f.render_stateful_widget(
         List::new(formatted_repositories)
