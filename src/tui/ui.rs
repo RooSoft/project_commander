@@ -18,13 +18,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
     let formatted_projects = app
         .projects
         .iter()
-        .map(|project| {
-            let time = project.format_time();
-
-            let padding = " ".repeat(6 - time.to_string().len());
-
-            format!("{}{} - {}", padding, time, project.get_path())
-        })
+        .map(|p| p.to_string())
         .collect::<Vec<String>>();
 
     f.render_stateful_widget(

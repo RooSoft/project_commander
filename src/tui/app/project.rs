@@ -1,6 +1,7 @@
 use crate::files;
 
 use git2::Time;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Project {
@@ -64,6 +65,16 @@ impl Project {
     }
 }
 
+impl fmt::Display for Project {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let time = self.format_time();
+
+        let padding = " ".repeat(6 - time.to_string().len());
+
+        write!(f, "{}{} - {}", padding, time, self.get_path())
+    }
+}
+
 fn format_duration(duration: std::time::Duration) -> String {
     if duration.as_secs() < 60 {
         // Less than a minute
@@ -79,4 +90,3 @@ fn format_duration(duration: std::time::Duration) -> String {
         format!("{}d", duration.as_secs() / 86400)
     }
 }
-
