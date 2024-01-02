@@ -4,7 +4,6 @@ use crate::files;
 
 #[derive(Debug, Default)]
 pub struct App {
-    pub counter: i64,
     pub repositories: Vec<(String, i64)>,
     pub items: ListState,
     pub should_quit: bool,
@@ -18,7 +17,6 @@ impl App {
         items.select(Some(0));
 
         App {
-            counter: 0,
             repositories: get_repositories(parent_folder),
             items,
             should_quit: false,
@@ -58,18 +56,6 @@ impl App {
         self.items.select(Some(self.repositories.len()-1))
     }
 
-    pub fn increment_counter(&mut self) {
-        if let Some(res) = self.counter.checked_add(1) {
-            self.counter = res;
-        }
-    }
-
-    pub fn decrement_counter(&mut self) {
-        if let Some(res) = self.counter.checked_sub(1) {
-            self.counter = res;
-        }
-    }
-
     pub fn apply(&mut self) {
         let _ = std::env::set_current_dir("~/work");
         let index = self.items.selected().unwrap();
@@ -106,22 +92,4 @@ fn get_repositories(parent: &str) -> Vec<(String, i64)> {
     repos_with_timestamps.sort_by(|(_, a), (_, b)| b.cmp(a));
 
     repos_with_timestamps
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_app_increment_counter() {
-        let mut app = App::default();
-        app.increment_counter();
-        assert_eq!(app.counter, 1);
-    }
-
-    #[test]
-    fn test_app_decrement_counter() {
-        let mut app = App::default();
-        app.decrement_counter();
-        assert_eq!(app.counter, -1);
-    }
 }
