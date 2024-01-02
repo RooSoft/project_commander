@@ -29,7 +29,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
 
             let padding = " ".repeat(6 - formatted_duration.to_string().len());
 
-            format!("{}{} - {}", padding, formatted_duration, project.get_name())
+            format!("{}{} - {}", padding, formatted_duration, project.get_path())
         })
         .collect::<Vec<String>>();
 

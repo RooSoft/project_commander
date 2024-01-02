@@ -4,16 +4,11 @@ use git2::Time;
 
 #[derive(Debug)]
 pub struct Project {
-    name: String,
     path: String,
     last_commit_date: Time,
 }
 
 impl Project {
-    pub fn get_name(&self) -> String {
-        self.name.clone()
-    }
-
     pub fn get_path(&self) -> String {
         self.path.clone()
     }
@@ -35,10 +30,9 @@ impl Project {
                         let commit = object.peel_to_commit().unwrap();
                         // let commit_timestamp = commit.time().seconds();
 
-                        let project = Self{
-                            name: path.clone(),
+                        let project = Self {
                             path: path.clone(),
-                            last_commit_date: commit.time()
+                            last_commit_date: commit.time(),
                         };
 
                         // Some((path.clone(), commit_timestamp))
