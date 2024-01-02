@@ -17,6 +17,8 @@ pub fn update(app: &mut App, key_event: KeyEvent) {
 
         KeyCode::Char('g') => app.select_first(),
         KeyCode::Char('G') => app.select_last(),
+
+        KeyCode::Enter => app.apply(),
         _ => {}
     };
 }

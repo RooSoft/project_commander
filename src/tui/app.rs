@@ -8,6 +8,7 @@ pub struct App {
     pub repositories: Vec<(String, i64)>,
     pub items: ListState,
     pub should_quit: bool,
+    pub quit_output: String
 }
 
 impl App {
@@ -21,6 +22,7 @@ impl App {
             repositories: get_repositories(parent_folder),
             items,
             should_quit: false,
+            quit_output: "".to_string()
         }
     }
 
@@ -66,6 +68,15 @@ impl App {
         if let Some(res) = self.counter.checked_sub(1) {
             self.counter = res;
         }
+    }
+
+    pub fn apply(&mut self) {
+        let _ = std::env::set_current_dir("~/work");
+        let index = self.items.selected().unwrap();
+        let (selected_path, _) = self.repositories.get(index).unwrap();
+        
+        self.quit_output = selected_path.to_string();
+        self.should_quit = true;
     }
 }
 

@@ -44,5 +44,8 @@ fn main() -> Result<()> {
 
     // Exit the user interface.
     tui.exit()?;
+
+    println!("{}", app.quit_output);
+
     Ok(())
 }
