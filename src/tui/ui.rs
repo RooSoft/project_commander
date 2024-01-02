@@ -15,26 +15,26 @@ pub fn render(app: &mut App, f: &mut Frame) {
     app.items.select(app.items.selected());
     app.tick();
 
-    let formatted_repositories = app
-        .repositories
+    let formatted_projects = app
+        .projects
         .iter()
-        .map(|(path, timestamp)| {
+        .map(|project| {
             let duration = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .expect("SystemTime before UNIX EPOCH!")
-                .checked_sub(std::time::Duration::from_secs(*timestamp as u64))
+                .checked_sub(std::time::Duration::from_secs(project.get_last_commit_date().seconds() as u64))
                 .expect("Duration calculation failed");
 
             let formatted_duration = format_duration(duration);
 
             let padding = " ".repeat(6 - formatted_duration.to_string().len());
 
-            format!("{}{} - {}", padding, formatted_duration, path)
+            format!("{}{} - {}", padding, formatted_duration, project.get_name())
         })
         .collect::<Vec<String>>();
 
     f.render_stateful_widget(
-        List::new(formatted_repositories)
+        List::new(formatted_projects)
             .block(Block::default().borders(Borders::ALL))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")
