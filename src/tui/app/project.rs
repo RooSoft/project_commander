@@ -50,4 +50,33 @@ impl Project {
 
         repos_with_timestamps
     }
+
+    pub fn format_time(&self) -> String {
+        let duration = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("SystemTime before UNIX EPOCH!")
+            .checked_sub(std::time::Duration::from_secs(
+                self.last_commit_date.seconds() as u64,
+            ))
+            .expect("Duration calculation failed");
+
+        format_duration(duration)
+    }
 }
+
+fn format_duration(duration: std::time::Duration) -> String {
+    if duration.as_secs() < 60 {
+        // Less than a minute
+        format!("{}s", duration.as_secs())
+    } else if duration.as_secs() < 3600 {
+        // Less than an hour
+        format!("{}m", duration.as_secs() / 60)
+    } else if duration.as_secs() < 86400 {
+        // Less than a day
+        format!("{}h", duration.as_secs() / 3600)
+    } else {
+        // More than a day
+        format!("{}d", duration.as_secs() / 86400)
+    }
+}
+
