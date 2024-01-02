@@ -25,9 +25,11 @@ pub fn render(app: &mut App, f: &mut Frame) {
                 .checked_sub(std::time::Duration::from_secs(*timestamp as u64))
                 .expect("Duration calculation failed");
 
-            let formatted_duration = humantime::format_duration(duration);
+            let formatted_duration = format_duration(duration);
 
-            format!("{:>30} - {}", formatted_duration, path)
+            let padding = " ".repeat(6 - formatted_duration.to_string().len());
+
+            format!("{}{} - {}", padding, formatted_duration, path)
         })
         .collect::<Vec<String>>();
 
@@ -61,4 +63,20 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .alignment(Alignment::Center),
         layout[1],
     )
+}
+
+fn format_duration(duration: std::time::Duration) -> String {
+    if duration.as_secs() < 60 {
+        // Less than a minute
+        format!("{}s", duration.as_secs())
+    } else if duration.as_secs() < 3600 {
+        // Less than an hour
+        format!("{}m", duration.as_secs() / 60)
+    } else if duration.as_secs() < 86400 {
+        // Less than a day
+        format!("{}h", duration.as_secs() / 3600)
+    } else {
+        // More than a day
+        format!("{}d", duration.as_secs() / 86400)
+    }
 }
