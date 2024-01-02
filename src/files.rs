@@ -4,10 +4,7 @@ use std::io;
 
 pub fn list_folders(parent: &str) -> Result<Vec<(String, git2::Repository)>, io::Error> {
     let repositories = fs::read_dir(parent)?
-        .filter(|e| match e {
-            Ok(entry) => entry.metadata().map(|m| m.is_dir()).unwrap_or(false),
-            Err(_) => false,
-        })
+        .filter(keep_folders)
         .filter_map(|e| {
             let path_buf = &e.unwrap().path();
             let path = path_buf.as_path();
@@ -31,4 +28,11 @@ pub fn list_folders(parent: &str) -> Result<Vec<(String, git2::Repository)>, io:
         .collect::<Vec<(String, git2::Repository)>>();
 
     Ok(repositories)
+}
+
+fn keep_folders(e: &Result<fs::DirEntry, io::Error>) -> bool {
+    match e {
+        Ok(entry) => entry.metadata().map(|m| m.is_dir()).unwrap_or(false),
+        Err(_) => false,
+    }
 }
