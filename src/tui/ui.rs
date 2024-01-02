@@ -14,9 +14,11 @@ pub fn render(app: &mut App, f: &mut Frame) {
 
     app.items.select(app.items.selected());
     app.tick();
+
+    let formatted_repositories = app.repositories.iter().map(|(r, _)| r.clone()).collect::<Vec<String>>();
     
     f.render_stateful_widget(
-        List::new(app.repositories.clone())
+        List::new(formatted_repositories)
             .block(Block::default().borders(Borders::ALL))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")

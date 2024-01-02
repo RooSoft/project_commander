@@ -5,7 +5,7 @@ use crate::files;
 #[derive(Debug, Default)]
 pub struct App {
     pub counter: i64,
-    pub repositories: Vec<String>,
+    pub repositories: Vec<(String, i64)>,
     pub items: ListState,
     pub should_quit: bool,
 }
@@ -16,17 +16,16 @@ impl App {
         let mut items = ListState::default();
         items.select(Some(0));
 
-        App{
+        App {
             counter: 0,
             repositories: get_repositories(parent_folder),
             items,
-            should_quit: false
+            should_quit: false,
         }
     }
 
     /// Handles the tick event of the terminal.
-    pub fn tick(&self) {
-    }
+    pub fn tick(&self) {}
 
     /// Set should_quit to true to quit the application.
     pub fn quit(&mut self) {
@@ -62,14 +61,32 @@ impl App {
     }
 }
 
-
-fn get_repositories(parent: &str) -> Vec<String> {
+fn get_repositories(parent: &str) -> Vec<(String, i64)> {
     let repos = files::list_folders(parent).unwrap();
 
-    repos
+    let mut repos_with_timestamps = repos
         .iter()
-        .map(|(path, _repository)| path.clone())
-        .collect::<Vec<String>>()
+        .filter_map(|(path, repository)| {
+            if let Ok(head) = repository.head() {
+                if let Some(head_name) = head.name() {
+                    // let branch = head.name();
+                    let object = repository.revparse_single(&head_name).unwrap();
+                    let commit = object.peel_to_commit().unwrap();
+                    let commit_timestamp = commit.time().seconds();
+
+                    Some((path.clone(), commit_timestamp))
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<(String, i64)>>();
+
+    repos_with_timestamps.sort_by(|(_, a), (_, b)| b.cmp(a));
+
+    repos_with_timestamps
 }
 
 #[cfg(test)]
@@ -88,5 +105,4 @@ mod tests {
         app.decrement_counter();
         assert_eq!(app.counter, -1);
     }
-} 
-
+}
