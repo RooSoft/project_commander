@@ -35,14 +35,18 @@ impl App {
 
     pub fn select_up(&mut self) {
         let selected = self.items.selected().unwrap();
-        self.items.select(Some(selected - 1));
+
+        if let Some(new_selection) = selected.checked_sub(1) {
+            self.items.select(Some(new_selection));
+        }
     }
 
     pub fn select_down(&mut self) {
         let selected = self.items.selected().unwrap();
-        let new_selection = Some(selected + 1);
 
-        self.items.select(new_selection);
+        if selected < self.repositories.len() - 1 {
+            self.items.select(Some(selected + 1))
+        }
     }
 
     pub fn increment_counter(&mut self) {
