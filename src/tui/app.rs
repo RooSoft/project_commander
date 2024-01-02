@@ -48,6 +48,14 @@ impl App {
         }
     }
 
+    pub fn select_first(&mut self) {
+        self.items.select(Some(0));
+    }
+
+    pub fn select_last(&mut self) {
+        self.items.select(Some(self.repositories.len()-1))
+    }
+
     pub fn increment_counter(&mut self) {
         if let Some(res) = self.counter.checked_add(1) {
             self.counter = res;
