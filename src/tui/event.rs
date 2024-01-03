@@ -92,8 +92,10 @@ impl EventHandler {
     }
 
     fn create_timeout(tick_rate: Duration, last_tick: Instant) -> Duration {
-        tick_rate
-            .checked_sub(last_tick.elapsed())
-            .unwrap_or(tick_rate)
+        if let Some(timeout) = tick_rate.checked_sub(last_tick.elapsed()) {
+            timeout
+        } else {
+            tick_rate
+        }
     }
 }
