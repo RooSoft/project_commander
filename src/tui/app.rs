@@ -2,14 +2,23 @@ mod project;
 
 use project::Project;
 
+use std::error::Error;
+
 use ratatui::widgets::ListState;
+use ratatui::{backend::CrosstermBackend, Terminal};
+
+use crate::tui::{
+    event::{Event, EventHandler},
+    tui::Tui,
+    update::update,
+};
 
 #[derive(Debug, Default)]
 pub struct App {
     pub projects: Vec<Project>,
     pub items: ListState,
     pub should_quit: bool,
-    pub quit_output: String
+    pub quit_output: String,
 }
 
 impl App {
@@ -22,8 +31,37 @@ impl App {
             projects: Project::get_from_path(parent_folder),
             items,
             should_quit: false,
-            quit_output: "".to_string()
+            quit_output: "".to_string(),
         }
+    }
+
+    pub fn run(parent_folder: &str) -> Result<String, Box<dyn Error>> {
+        let mut app = Self::new(parent_folder);
+
+        // Initialize the terminal user interface.
+        let backend = CrosstermBackend::new(std::io::stderr());
+        let terminal = Terminal::new(backend)?;
+        let events = EventHandler::new(250);
+        let mut tui = Tui::new(terminal, events);
+        tui.enter()?;
+
+        // Start the main loop.
+        while !app.should_quit {
+            // Render the user interface.
+            tui.draw(&mut app)?;
+            // Handle events.
+            match tui.events.next()? {
+                Event::Tick => {}
+                Event::Key(key_event) => update(&mut app, key_event),
+                Event::Mouse(_) => {}
+                Event::Resize(_, _) => {}
+            };
+        }
+
+        // Exit the user interface.
+        tui.exit()?;
+
+        Ok(app.quit_output)
     }
 
     /// Handles the tick event of the terminal.
@@ -55,16 +93,15 @@ impl App {
     }
 
     pub fn select_last(&mut self) {
-        self.items.select(Some(self.projects.len()-1))
+        self.items.select(Some(self.projects.len() - 1))
     }
 
     pub fn apply(&mut self) {
         let _ = std::env::set_current_dir("~/work");
         let index = self.items.selected().unwrap();
         let project = self.projects.get(index).unwrap();
-        
+
         self.quit_output = project.get_path();
         self.should_quit = true;
     }
 }
-
