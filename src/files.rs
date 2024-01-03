@@ -32,7 +32,10 @@ pub fn list_folders(parent: &str) -> Result<Vec<(String, git2::Repository)>, io:
 
 fn keep_folders(e: &Result<fs::DirEntry, io::Error>) -> bool {
     match e {
-        Ok(entry) => entry.metadata().map(|m| m.is_dir()).unwrap_or(false),
+        Ok(entry) => match entry.metadata().map(|m| m.is_dir()) {
+            Ok(result) => result,
+            Err(_) => false
+        },
         Err(_) => false,
     }
 }
