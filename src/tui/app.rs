@@ -18,7 +18,7 @@ pub struct App {
     pub projects: Vec<Project>,
     pub items: ListState,
     pub should_quit: bool,
-    pub quit_output: String,
+    pub quit_output: Option<String>,
 }
 
 impl App {
@@ -31,11 +31,11 @@ impl App {
             projects: Project::get_from_path(parent_folder),
             items,
             should_quit: false,
-            quit_output: "".to_string(),
+            quit_output: None
         }
     }
 
-    pub fn run(parent_folder: &str) -> Result<String, Box<dyn Error>> {
+    pub fn run(parent_folder: &str) -> Result<Option<String>, Box<dyn Error>> {
         let mut app = Self::new(parent_folder);
 
         // Initialize the terminal user interface.
@@ -101,7 +101,7 @@ impl App {
         let index = self.items.selected().unwrap();
         let project = self.projects.get(index).unwrap();
 
-        self.quit_output = project.get_path();
+        self.quit_output = Some(project.get_path());
         self.should_quit = true;
     }
 }

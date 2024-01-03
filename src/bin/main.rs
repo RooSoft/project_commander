@@ -7,8 +7,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let parent_folder = &args[1];
 
-    let result = App::run(&parent_folder)?;
+    if let Some(output) = App::run(&parent_folder)? {
+        println!("{}", output);
+    }
 
-    println!("{}", result);
     Ok(())
 }
