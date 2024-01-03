@@ -23,20 +23,22 @@ pub struct App {
 
 impl App {
     /// Constructs a new instance of [`App`].
-    pub fn new(parent_folder: &str) -> Self {
+    pub fn new(parent_folder: &str) -> Result<Self, Box<dyn Error>> {
         let mut items = ListState::default();
         items.select(Some(0));
 
-        App {
-            projects: Project::get_from_path(parent_folder),
+        let projects = Project::get_from_path(parent_folder)?;
+
+        Ok(App {
+            projects,
             items,
             should_quit: false,
             quit_output: None,
-        }
+        })
     }
 
     pub fn run(parent_folder: &str) -> Result<Option<String>, Box<dyn Error>> {
-        let mut app = Self::new(parent_folder);
+        let mut app = Self::new(parent_folder)?;
 
         // Initialize the terminal user interface.
         let backend = CrosstermBackend::new(std::io::stderr());

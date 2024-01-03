@@ -18,8 +18,8 @@ impl Project {
         self.last_commit_date
     }
 
-    pub fn get_from_path(parent: &str) -> Vec<Self> {
-        let repos = files::list_folders(parent).unwrap();
+    pub fn get_from_path(parent: &str) -> Result<Vec<Self>, std::io::Error> {
+        let repos = files::list_folders(parent)?;
 
         let mut repos_with_timestamps = repos
             .iter()
@@ -28,7 +28,7 @@ impl Project {
 
         repos_with_timestamps.sort_by(|p1, p2| p2.last_commit_date.cmp(&p1.last_commit_date));
 
-        repos_with_timestamps
+        Ok(repos_with_timestamps)
     }
 
     fn extract_project((path, repository): &(String, git2::Repository)) -> Option<Self> {
