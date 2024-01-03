@@ -1,7 +1,7 @@
 use crate::files;
 
 use git2::Time;
-use std::fmt;
+use std::{error::Error, fmt};
 
 #[derive(Debug)]
 pub struct Project {
@@ -32,22 +32,35 @@ impl Project {
     }
 
     fn extract_project((path, repository): &(String, git2::Repository)) -> Option<Self> {
-        if let Ok(head) = repository.head() {
-            let head_name = head.name()?;
-            // let branch = head.name();
-            let object = repository.revparse_single(&head_name).unwrap();
-            let commit = object.peel_to_commit().unwrap();
-            // let commit_timestamp = commit.time().seconds();
-
-            let project = Self {
-                path: path.clone(),
-                last_commit_date: commit.time(),
-            };
-
-            // Some((path.clone(), commit_timestamp))
+        if let Ok(project) = Self::project_from_repo(path, repository) {
             Some(project)
         } else {
             None
+        }
+    }
+
+    fn project_from_repo(
+        path: &String,
+        repository: &git2::Repository,
+    ) -> Result<Project, Box<dyn Error>> {
+        let head = repository.head()?;
+
+        match head.name() {
+            Some(head_name) => {
+                // let branch = head.name();
+                let object = repository.revparse_single(&head_name)?;
+                let commit = object.peel_to_commit()?;
+                // let commit_timestamp = commit.time().seconds();
+
+                let project = Self {
+                    path: path.clone(),
+                    last_commit_date: commit.time(),
+                };
+
+                // Some((path.clone(), commit_timestamp))
+                Ok(project)
+            }
+            None => Err("The project has no head".into()),
         }
     }
 
