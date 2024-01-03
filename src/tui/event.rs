@@ -57,29 +57,13 @@ impl EventHandler {
         Ok(self.receiver.recv()?)
     }
 
-    pub fn create_handler(sender: mpsc::Sender<Event>, tick_rate: Duration) -> thread::JoinHandle<()> {
+    fn create_handler(sender: mpsc::Sender<Event>, tick_rate: Duration) -> thread::JoinHandle<()> {
         thread::spawn(move || {
             let mut last_tick = Instant::now();
             loop {
-                let timeout = tick_rate
-                    .checked_sub(last_tick.elapsed())
-                    .unwrap_or(tick_rate);
+                let timeout = Self::create_timeout(tick_rate, last_tick);
 
-                if event::poll(timeout).expect("unable to poll for event") {
-                    match event::read().expect("unable to read event") {
-                        CrosstermEvent::Key(e) => {
-                            if e.kind == event::KeyEventKind::Press {
-                                sender.send(Event::Key(e))
-                            } else {
-                                Ok(()) // ignore KeyEventKind::Release on windows
-                            }
-                        }
-                        CrosstermEvent::Mouse(e) => sender.send(Event::Mouse(e)),
-                        CrosstermEvent::Resize(w, h) => sender.send(Event::Resize(w, h)),
-                        _ => unimplemented!(),
-                    }
-                    .expect("failed to send terminal event")
-                }
+                Self::poll_event(&sender, timeout);
 
                 if last_tick.elapsed() >= tick_rate {
                     sender.send(Event::Tick).expect("failed to send tick event");
@@ -87,5 +71,29 @@ impl EventHandler {
                 }
             }
         })
+    }
+
+    fn poll_event(sender: &mpsc::Sender<Event>, timeout: Duration) {
+        if event::poll(timeout).expect("unable to poll for event") {
+            match event::read().expect("unable to read event") {
+                CrosstermEvent::Key(e) => {
+                    if e.kind == event::KeyEventKind::Press {
+                        sender.send(Event::Key(e))
+                    } else {
+                        Ok(()) // ignore KeyEventKind::Release on windows
+                    }
+                }
+                CrosstermEvent::Mouse(e) => sender.send(Event::Mouse(e)),
+                CrosstermEvent::Resize(w, h) => sender.send(Event::Resize(w, h)),
+                _ => unimplemented!(),
+            }
+            .expect("failed to send terminal event")
+        }
+    }
+
+    fn create_timeout(tick_rate: Duration, last_tick: Instant) -> Duration {
+        tick_rate
+            .checked_sub(last_tick.elapsed())
+            .unwrap_or(tick_rate)
     }
 }
