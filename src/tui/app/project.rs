@@ -23,33 +23,35 @@ impl Project {
 
         let mut repos_with_timestamps = repos
             .iter()
-            .filter_map(|(path, repository)| {
-                if let Ok(head) = repository.head() {
-                    if let Some(head_name) = head.name() {
-                        // let branch = head.name();
-                        let object = repository.revparse_single(&head_name).unwrap();
-                        let commit = object.peel_to_commit().unwrap();
-                        // let commit_timestamp = commit.time().seconds();
-
-                        let project = Self {
-                            path: path.clone(),
-                            last_commit_date: commit.time(),
-                        };
-
-                        // Some((path.clone(), commit_timestamp))
-                        Some(project)
-                    } else {
-                        None
-                    }
-                } else {
-                    None
-                }
-            })
+            .filter_map(Self::extract_project)
             .collect::<Vec<Project>>();
 
         repos_with_timestamps.sort_by(|p1, p2| p2.last_commit_date.cmp(&p1.last_commit_date));
 
         repos_with_timestamps
+    }
+
+    fn extract_project((path, repository): &(String, git2::Repository)) -> Option<Self> {
+        if let Ok(head) = repository.head() {
+            if let Some(head_name) = head.name() {
+                // let branch = head.name();
+                let object = repository.revparse_single(&head_name).unwrap();
+                let commit = object.peel_to_commit().unwrap();
+                // let commit_timestamp = commit.time().seconds();
+
+                let project = Self {
+                    path: path.clone(),
+                    last_commit_date: commit.time(),
+                };
+
+                // Some((path.clone(), commit_timestamp))
+                Some(project)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 
     fn format_time(&self) -> String {
