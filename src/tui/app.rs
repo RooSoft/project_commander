@@ -99,8 +99,6 @@ impl App {
     }
 
     pub fn apply(&mut self) {
-        let _ = std::env::set_current_dir("~/work");
-
         if let Some(index) = self.items.selected() {
             if let Some(project) = self.projects.get(index) {
                 self.quit_output = Some(project.get_path());

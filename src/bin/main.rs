@@ -1,15 +1,21 @@
-use project_commander::tui::app::App;
+use project_commander::{configuration::Configuration, tui::app::App};
 
 use color_eyre::Result;
-use std::env;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<String> = env::args().collect();
-    let parent_folder = &args[1];
+    let configuration = get_configuration();
 
-    if let Some(output) = App::run(&parent_folder)? {
+    if let Some(output) = App::run(configuration.parent_folder())? {
         println!("{}", output);
     }
 
     Ok(())
+}
+
+fn get_configuration() -> Configuration {
+    if let Ok(config) = Configuration::read() {
+        config
+    } else {
+        Configuration::wizard()
+    }
 }
