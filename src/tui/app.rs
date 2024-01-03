@@ -31,7 +31,7 @@ impl App {
             projects: Project::get_from_path(parent_folder),
             items,
             should_quit: false,
-            quit_output: None
+            quit_output: None,
         }
     }
 
@@ -73,18 +73,18 @@ impl App {
     }
 
     pub fn select_up(&mut self) {
-        let selected = self.items.selected().unwrap();
-
-        if let Some(new_selection) = selected.checked_sub(1) {
-            self.items.select(Some(new_selection));
+        if let Some(selected) = self.items.selected() {
+            if let Some(new_selection) = selected.checked_sub(1) {
+                self.items.select(Some(new_selection));
+            }
         }
     }
 
     pub fn select_down(&mut self) {
-        let selected = self.items.selected().unwrap();
-
-        if selected < self.projects.len() - 1 {
-            self.items.select(Some(selected + 1))
+        if let Some(selected) = self.items.selected() {
+            if selected < self.projects.len() - 1 {
+                self.items.select(Some(selected + 1))
+            }
         }
     }
 
