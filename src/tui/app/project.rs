@@ -52,7 +52,7 @@ impl Project {
         repos_with_timestamps
     }
 
-    pub fn format_time(&self) -> String {
+    fn format_time(&self) -> String {
         let duration = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .expect("SystemTime before UNIX EPOCH!")
