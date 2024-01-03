@@ -14,19 +14,23 @@ pub fn list_folders(parent: &str) -> Result<Vec<(String, git2::Repository)>, io:
 }
 
 fn filter_folders(e: Result<fs::DirEntry, io::Error>, parent: &str) -> Option<Vec<(String, Repository)>> {
-    let path_buf = &e.unwrap().path();
-    let path = path_buf.as_path();
-    let name = path.file_name().unwrap().to_str().unwrap();
+    if let Ok(path_buf) = e {
+        let path = path_buf.path();
+        let path_string = path.as_path();
+        let name = path_string.file_name()?.to_str()?;
 
-    if name != ".git" && name != "target" && name != ".." {
-        let relative_path = format!("{}/{}", parent, name);
+        if name != ".git" && name != "target" && name != ".." {
+            let relative_path = format!("{}/{}", parent, name);
 
-        match git::get_repository(&relative_path) {
-            Some(repository) => Some(vec![(relative_path, repository)]),
-            None => match list_folders(&relative_path) {
-                Ok(repos) => Some(repos),
-                Err(_) => None,
-            },
+            match git::get_repository(&relative_path) {
+                Some(repository) => Some(vec![(relative_path, repository)]),
+                None => match list_folders(&relative_path) {
+                    Ok(repos) => Some(repos),
+                    Err(_) => None,
+                },
+            }
+        } else {
+            None
         }
     } else {
         None
