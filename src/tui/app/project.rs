@@ -33,22 +33,19 @@ impl Project {
 
     fn extract_project((path, repository): &(String, git2::Repository)) -> Option<Self> {
         if let Ok(head) = repository.head() {
-            if let Some(head_name) = head.name() {
-                // let branch = head.name();
-                let object = repository.revparse_single(&head_name).unwrap();
-                let commit = object.peel_to_commit().unwrap();
-                // let commit_timestamp = commit.time().seconds();
+            let head_name = head.name()?;
+            // let branch = head.name();
+            let object = repository.revparse_single(&head_name).unwrap();
+            let commit = object.peel_to_commit().unwrap();
+            // let commit_timestamp = commit.time().seconds();
 
-                let project = Self {
-                    path: path.clone(),
-                    last_commit_date: commit.time(),
-                };
+            let project = Self {
+                path: path.clone(),
+                last_commit_date: commit.time(),
+            };
 
-                // Some((path.clone(), commit_timestamp))
-                Some(project)
-            } else {
-                None
-            }
+            // Some((path.clone(), commit_timestamp))
+            Some(project)
         } else {
             None
         }
