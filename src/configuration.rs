@@ -1,4 +1,4 @@
-use anyhow::Error;
+use anyhow::{anyhow, Error};
 use serde::Serialize;
 use std::{
     fs, 
@@ -17,9 +17,17 @@ impl Configuration {
         let contents = fs::read_to_string("/Users/roo/.config/project_commander/config.toml")?;
 
         let table = contents.parse::<Table>().unwrap();
-        let parent_folder = table["parent_folder"].as_str().unwrap().to_string();
+        
+        if let Some(table_value) = table["parent_folder"].as_str() {
+            let parent_folder = shellexpand::tilde(&table_value).into_owned();
 
-        Ok(Configuration { parent_folder })
+            let configuration = Configuration { parent_folder };
+
+            Ok(configuration)
+        } else {
+            Err(anyhow!("Cannot find parent folder"))
+        }
+
     }
 
     pub fn parent_folder(&self) -> &String {
