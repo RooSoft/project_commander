@@ -48,7 +48,7 @@ impl Project {
         match head.name() {
             Some(head_name) => {
                 // let branch = head.name();
-                let object = repository.revparse_single(&head_name)?;
+                let object = repository.revparse_single(head_name)?;
                 let commit = object.peel_to_commit()?;
                 // let commit_timestamp = commit.time().seconds();
 
