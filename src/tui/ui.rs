@@ -32,7 +32,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
     );
 
     f.render_widget(
-        Paragraph::new(format!("here will lie some repository information"))
+        Paragraph::new("here will lie some repository information".to_string())
             .block(
                 Block::default()
                     .title("Repository info")
