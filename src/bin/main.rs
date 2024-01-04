@@ -3,6 +3,8 @@ use project_commander::{configuration::Configuration, tui::app::App};
 use color_eyre::Result;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dbg!(std::env::var("HOME"))?;
+
     let configuration = get_configuration();
 
     if let Some(output) = App::run(configuration.parent_folder())? {

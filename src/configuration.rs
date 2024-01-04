@@ -32,8 +32,8 @@ impl Configuration {
         let mut buffer = String::new();
         io::stdin().read_line(&mut buffer)?;
 
-        let parent_folder = buffer.trim().into();
-        let configuration = Self { parent_folder };
+        let parent_folder = shellexpand::full(buffer.trim())?;
+        let configuration = Self { parent_folder: parent_folder.into() };
 
         let filename = "/Users/roo/.config/project_commander/config.toml";
         let contents = toml::to_string(&configuration).unwrap();
