@@ -40,7 +40,7 @@ impl Project {
     }
 
     fn extract_project(
-        path: &String,
+        path: &str,
         repository: &git2::Repository,
     ) -> Result<Project, Box<dyn Error>> {
         let head = repository.head()?;
@@ -53,7 +53,7 @@ impl Project {
                 // let commit_timestamp = commit.time().seconds();
 
                 let project = Self {
-                    path: path.clone(),
+                    path: path.to_string(),
                     last_commit_date: commit.time(),
                 };
 
