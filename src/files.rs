@@ -39,10 +39,7 @@ fn filter_folders(e: Result<fs::DirEntry, io::Error>, parent: &str) -> Option<Ve
 
 fn keep_folders(e: &Result<fs::DirEntry, io::Error>) -> bool {
     match e {
-        Ok(entry) => match entry.metadata().map(|m| m.is_dir()) {
-            Ok(result) => result,
-            Err(_) => false,
-        },
+        Ok(entry) => entry.metadata().map(|m| m.is_dir()).unwrap_or(false),
         Err(_) => false,
     }
 }
