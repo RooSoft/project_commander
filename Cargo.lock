@@ -505,6 +505,7 @@ dependencies = [
  "git2",
  "humantime",
  "ratatui",
+ "serde",
  "toml",
 ]
 

@@ -16,6 +16,9 @@ fn get_configuration() -> Configuration {
     if let Ok(config) = Configuration::read() {
         config
     } else {
-        Configuration::wizard()
+        match Configuration::wizard() {
+            Ok(config) => config,
+            Err(message) => panic!("{}", message)
+        }
     }
 }

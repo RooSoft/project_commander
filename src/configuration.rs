@@ -1,8 +1,13 @@
 use anyhow::Error;
-use std::fs;
+use serde::Serialize;
+use std::{
+    fs, 
+    io::{self, Write}
+};
+
 use toml::Table;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Configuration {
     parent_folder: String,
 }
@@ -21,7 +26,21 @@ impl Configuration {
         &self.parent_folder
     }
 
-    pub fn wizard() -> Self {
-        unimplemented!()
+    pub fn wizard() -> Result<Self, Error> {
+        println!("Can't find the current configuration. Please input a folder to recursively scan for projects");
+
+        let mut buffer = String::new();
+        io::stdin().read_line(&mut buffer)?;
+
+        let parent_folder = buffer.trim().into();
+        let configuration = Self { parent_folder };
+
+        let filename = "/Users/roo/.config/project_commander/config.toml";
+        let contents = toml::to_string(&configuration).unwrap();
+
+        let mut file = fs::File::create(filename)?;
+        file.write_all(contents.as_bytes())?;
+
+        Ok(configuration)
     }
 }
