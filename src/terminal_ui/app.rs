@@ -7,7 +7,7 @@ use std::error::Error;
 use ratatui::widgets::ListState;
 use ratatui::{backend::CrosstermBackend, Terminal};
 
-use crate::tui::{
+use crate::terminal_ui::{
     event::{Event, EventHandler},
     tui::Tui,
     update::update,

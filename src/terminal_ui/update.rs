@@ -1,6 +1,6 @@
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
-use crate::tui::app::App;
+use crate::terminal_ui::app::App;
 
 pub fn update(app: &mut App, key_event: KeyEvent) {
     match key_event.code {

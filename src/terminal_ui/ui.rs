@@ -4,7 +4,7 @@ use ratatui::{
     widgets::{Block, BorderType, Borders, List, Paragraph},
 };
 
-use crate::tui::app::App;
+use crate::terminal_ui::app::App;
 
 pub fn render(app: &mut App, f: &mut Frame) {
     let layout = Layout::default()

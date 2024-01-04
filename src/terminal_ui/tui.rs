@@ -8,7 +8,7 @@ use crossterm::{
 
 pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
 
-use crate::tui::{app::App, event::EventHandler, ui};
+use crate::terminal_ui::{app::App, event::EventHandler, ui};
 
 /// Representation of a terminal user interface.
 ///

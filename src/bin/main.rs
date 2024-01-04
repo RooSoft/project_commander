@@ -1,4 +1,4 @@
-use project_commander::{configuration::Configuration, tui::app::App};
+use project_commander::{configuration::Configuration, terminal_ui::app::App};
 
 use color_eyre::Result;
 
