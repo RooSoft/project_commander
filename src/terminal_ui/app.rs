@@ -17,6 +17,7 @@ use crate::terminal_ui::{
 pub struct App {
     pub projects: Vec<Project>,
     pub items: ListState,
+    pub show_search: bool,
     pub should_quit: bool,
     pub quit_output: Option<String>,
 }
@@ -32,6 +33,7 @@ impl App {
         Ok(App {
             projects,
             items,
+            show_search: false,
             should_quit: false,
             quit_output: None,
         })
@@ -96,6 +98,10 @@ impl App {
 
     pub fn select_last(&mut self) {
         self.items.select(Some(self.projects.len() - 1))
+    }
+
+    pub fn search(&mut self) {
+        self.show_search = !self.show_search;
     }
 
     pub fn apply(&mut self) {

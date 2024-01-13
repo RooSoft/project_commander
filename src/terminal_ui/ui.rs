@@ -9,7 +9,7 @@ use crate::terminal_ui::app::App;
 pub fn render(app: &mut App, f: &mut Frame) {
     let layout = Layout::default()
         .direction(Direction::Vertical)
-        .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
+        .constraints(get_constraints(app))
         .split(f.size());
 
     app.items.select(app.items.selected());
@@ -21,27 +21,37 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .map(|p| p.to_string())
         .collect::<Vec<String>>();
 
+    if app.show_search {
+        f.render_widget(
+            Paragraph::new("".to_string())
+                .block(
+                    Block::default()
+                        .title("Search")
+                        .title_alignment(Alignment::Center)
+                        .borders(Borders::ALL)
+                        .border_type(BorderType::Rounded),
+                )
+                .style(Style::default().fg(Color::Yellow))
+                .alignment(Alignment::Center),
+            layout[0],
+        )
+    }
+
     f.render_stateful_widget(
         List::new(formatted_projects)
             .block(Block::default().borders(Borders::ALL))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")
             .repeat_highlight_symbol(true),
-        layout[0],
+        layout[1],
         &mut app.items,
     );
+}
 
-    f.render_widget(
-        Paragraph::new("here will lie some repository information".to_string())
-            .block(
-                Block::default()
-                    .title("Repository info")
-                    .title_alignment(Alignment::Center)
-                    .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded),
-            )
-            .style(Style::default().fg(Color::Yellow))
-            .alignment(Alignment::Center),
-        layout[1],
-    )
+fn get_constraints(app: &App) -> Vec<Constraint> {
+    if app.show_search {
+        vec![Constraint::Length(3), Constraint::Percentage(50)]
+    } else {
+        vec![Constraint::Length(0), Constraint::Percentage(50)]
+    }
 }
