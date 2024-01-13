@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Error};
 use serde::Serialize;
 use std::{
-    fs, 
-    io::{self, Write}
+    fs,
+    io::{self, Write},
 };
 
 use toml::Table;
@@ -17,7 +17,7 @@ impl Configuration {
         let contents = fs::read_to_string("/Users/roo/.config/project_commander/config.toml")?;
 
         let table = contents.parse::<Table>().unwrap();
-        
+
         if let Some(table_value) = table["parent_folder"].as_str() {
             let parent_folder = shellexpand::tilde(&table_value).into_owned();
 
@@ -27,7 +27,6 @@ impl Configuration {
         } else {
             Err(anyhow!("Cannot find parent folder"))
         }
-
     }
 
     pub fn parent_folder(&self) -> &String {
@@ -41,7 +40,9 @@ impl Configuration {
         io::stdin().read_line(&mut buffer)?;
 
         let parent_folder = shellexpand::full(buffer.trim())?;
-        let configuration = Self { parent_folder: parent_folder.into() };
+        let configuration = Self {
+            parent_folder: parent_folder.into(),
+        };
 
         let filename = "/Users/roo/.config/project_commander/config.toml";
         let contents = toml::to_string(&configuration).unwrap();

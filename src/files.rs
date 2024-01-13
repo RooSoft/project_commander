@@ -13,7 +13,10 @@ pub fn list_folders(parent: &str) -> Result<Vec<(String, git2::Repository)>, io:
     Ok(repositories)
 }
 
-fn filter_folders(e: Result<fs::DirEntry, io::Error>, parent: &str) -> Option<Vec<(String, Repository)>> {
+fn filter_folders(
+    e: Result<fs::DirEntry, io::Error>,
+    parent: &str,
+) -> Option<Vec<(String, Repository)>> {
     if let Ok(path_buf) = e {
         let path = path_buf.path();
         let path_string = path.as_path();

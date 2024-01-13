@@ -26,8 +26,8 @@ pub fn render(app: &mut App, f: &mut Frame) {
             Paragraph::new("".to_string())
                 .block(
                     Block::default()
-                        .title("Search")
-                        .title_alignment(Alignment::Center)
+                        .title(" Search ")
+                        .title_alignment(Alignment::Left)
                         .borders(Borders::ALL)
                         .border_type(BorderType::Rounded),
                 )

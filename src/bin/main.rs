@@ -20,7 +20,7 @@ fn get_configuration() -> Configuration {
     } else {
         match Configuration::wizard() {
             Ok(config) => config,
-            Err(message) => panic!("{}", message)
+            Err(message) => panic!("{}", message),
         }
     }
 }

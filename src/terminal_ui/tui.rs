@@ -24,10 +24,7 @@ pub struct Tui {
 impl Tui {
     /// Constructs a new instance of [`Tui`].
     pub fn new(terminal: CrosstermTerminal, events: EventHandler) -> Self {
-        Self {
-            terminal,
-            events,
-        }
+        Self { terminal, events }
     }
 
     /// Initializes the terminal interface.
@@ -74,8 +71,7 @@ impl Tui {
     /// [`Draw`]: tui::Terminal::draw
     /// [`rendering`]: crate::ui:render
     pub fn draw(&mut self, app: &mut App) -> Result<()> {
-        self.terminal
-            .draw(|frame| ui::render(app, frame))?;
+        self.terminal.draw(|frame| ui::render(app, frame))?;
         Ok(())
     }
 }
