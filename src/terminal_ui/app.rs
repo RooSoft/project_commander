@@ -17,7 +17,8 @@ use crate::terminal_ui::{
 pub struct App {
     pub projects: Vec<Project>,
     pub items: ListState,
-    pub show_search: bool,
+    pub searching: bool,
+    pub search_text: Option<String>,
     pub should_quit: bool,
     pub quit_output: Option<String>,
 }
@@ -33,7 +34,8 @@ impl App {
         Ok(App {
             projects,
             items,
-            show_search: false,
+            searching: false,
+            search_text: None,
             should_quit: false,
             quit_output: None,
         })
@@ -101,7 +103,18 @@ impl App {
     }
 
     pub fn search(&mut self) {
-        self.show_search = !self.show_search;
+        self.searching = true;
+    }
+
+    pub fn stop_search(&mut self) {
+        self.searching = false;
+    }
+
+    pub fn add_to_search(&mut self, c: char) {
+        self.search_text = match &self.search_text {
+            None => Some(c.to_string()),
+            Some(search_text) => Some(format!("{}{}", search_text, c))
+        }
     }
 
     pub fn apply(&mut self) {

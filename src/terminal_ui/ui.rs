@@ -21,9 +21,11 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .map(|p| p.to_string())
         .collect::<Vec<String>>();
 
-    if app.show_search {
+    let search_text = format!(" {}", &app.search_text.clone().unwrap_or("".to_string()));
+
+    if app.searching {
         f.render_widget(
-            Paragraph::new("".to_string())
+            Paragraph::new(search_text)
                 .block(
                     Block::default()
                         .title(" Search ")
@@ -31,8 +33,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
                         .borders(Borders::ALL)
                         .border_type(BorderType::Rounded),
                 )
-                .style(Style::default().fg(Color::Yellow))
-                .alignment(Alignment::Center),
+                .style(Style::default().fg(Color::Yellow)),
             layout[0],
         )
     }
@@ -49,7 +50,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
 }
 
 fn get_constraints(app: &App) -> Vec<Constraint> {
-    if app.show_search {
+    if app.searching {
         vec![Constraint::Length(3), Constraint::Percentage(50)]
     } else {
         vec![Constraint::Length(0), Constraint::Percentage(50)]
