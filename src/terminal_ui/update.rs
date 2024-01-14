@@ -47,7 +47,7 @@ fn update_search_mode(app: &mut App, key_event: KeyEvent) {
 
             KeyCode::Char(c) => app.add_to_search(c),
 
-            _ => app.apply(),
+            _ => {},
         };
     }
 }
