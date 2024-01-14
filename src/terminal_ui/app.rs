@@ -16,6 +16,7 @@ use crate::terminal_ui::{
 #[derive(Debug, Default)]
 pub struct App {
     pub projects: Vec<Project>,
+    pub display_projects: Vec<Project>,
     pub items: ListState,
     pub searching: bool,
     pub search_text: String,
@@ -30,9 +31,11 @@ impl App {
         items.select(Some(0));
 
         let projects = Project::get_from_path(parent_folder)?;
+        let display_projects = projects.clone();
 
         Ok(App {
             projects,
+            display_projects,
             items,
             searching: false,
             search_text: "".to_string(),
@@ -111,12 +114,14 @@ impl App {
     }
 
     pub fn add_to_search(&mut self, c: char) {
-        self.search_text = format!("{}{}", self.search_text, c)
+        let new_search_text = format!("{}{}", self.search_text, c);
+        self.update_search_text(new_search_text);
     }
 
     pub fn remove_last_char_from_search(&mut self) {
         if self.search_text.len() > 0 {
-            self.search_text = self.search_text[0..self.search_text.len() - 1].to_string();
+            let new_search_text = self.search_text[0..self.search_text.len() - 1].to_string();
+            self.update_search_text(new_search_text);
         }
     }
 
@@ -127,5 +132,9 @@ impl App {
                 self.should_quit = true;
             }
         }
+    }
+
+    fn update_search_text(&mut self, search_text: String) {
+        self.search_text = search_text;
     }
 }

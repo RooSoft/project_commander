@@ -3,7 +3,7 @@ use crate::files;
 use git2::Time;
 use std::{error::Error, fmt};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Project {
     path: String,
     last_commit_date: Time,

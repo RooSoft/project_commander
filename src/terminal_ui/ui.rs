@@ -18,7 +18,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
     app.tick();
 
     let formatted_projects = app
-        .projects
+        .display_projects
         .iter()
         .map(|p| p.to_string())
         .filter(|p| {
