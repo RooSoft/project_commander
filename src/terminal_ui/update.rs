@@ -1,4 +1,4 @@
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventState, KeyModifiers};
 
 use crate::terminal_ui::app::App;
 
@@ -32,16 +32,22 @@ fn update_normal_mode(app: &mut App, key_event: KeyEvent) {
 }
 
 fn update_search_mode(app: &mut App, key_event: KeyEvent) {
-    match key_event.code {
-        KeyCode::Esc => app.stop_search(),
+    if key_event.state == KeyEventState::NONE && key_event.modifiers == KeyModifiers::CONTROL {
+        // in this situation, backspace most probably has been pressed
 
-        KeyCode::Up | KeyCode::Char('k') => app.select_up(),
-        KeyCode::Down | KeyCode::Char('j') => app.select_down(),
+        app.remove_last_char_from_search();
+    } else {
+        match key_event.code {
+            KeyCode::Esc => app.stop_search(),
 
-        KeyCode::Enter => app.apply(),
+            KeyCode::Up => app.select_up(),
+            KeyCode::Down => app.select_down(),
 
-        KeyCode::Char(c) => app.add_to_search(c),
+            KeyCode::Enter => app.apply(),
 
-        _ => app.apply()
-    };
+            KeyCode::Char(c) => app.add_to_search(c),
+
+            _ => app.apply(),
+        };
+    }
 }

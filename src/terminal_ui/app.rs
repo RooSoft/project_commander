@@ -18,7 +18,7 @@ pub struct App {
     pub projects: Vec<Project>,
     pub items: ListState,
     pub searching: bool,
-    pub search_text: Option<String>,
+    pub search_text: String,
     pub should_quit: bool,
     pub quit_output: Option<String>,
 }
@@ -35,7 +35,7 @@ impl App {
             projects,
             items,
             searching: false,
-            search_text: None,
+            search_text: "".to_string(),
             should_quit: false,
             quit_output: None,
         })
@@ -111,9 +111,12 @@ impl App {
     }
 
     pub fn add_to_search(&mut self, c: char) {
-        self.search_text = match &self.search_text {
-            None => Some(c.to_string()),
-            Some(search_text) => Some(format!("{}{}", search_text, c))
+        self.search_text = format!("{}{}", self.search_text, c)
+    }
+
+    pub fn remove_last_char_from_search(&mut self) {
+        if self.search_text.len() > 0 {
+            self.search_text = self.search_text[0..self.search_text.len() - 1].to_string();
         }
     }
 

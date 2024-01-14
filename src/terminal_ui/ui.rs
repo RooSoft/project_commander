@@ -21,7 +21,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .map(|p| p.to_string())
         .collect::<Vec<String>>();
 
-    let search_text = format!(" {}", &app.search_text.clone().unwrap_or("".to_string()));
+    let search_text = format!(" {}", &app.search_text);
 
     if app.searching {
         f.render_widget(
