@@ -15,8 +15,6 @@ pub fn render(app: &mut App, f: &mut Frame) {
     app.items.select(app.items.selected());
     app.tick();
 
-    let formatted_projects = app.get_filtered_projects_list();
-
     let search_text = format!(" {}", &app.search_text);
 
     if app.searching {
@@ -35,7 +33,7 @@ pub fn render(app: &mut App, f: &mut Frame) {
     }
 
     f.render_stateful_widget(
-        List::new(formatted_projects)
+        List::new(app.get_filtered_projects_list())
             .block(Block::default().borders(Borders::ALL))
             .highlight_style(Style::new().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">>")
