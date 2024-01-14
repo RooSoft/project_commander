@@ -18,7 +18,6 @@ use fuse_rust::{Fuse, ScoreResult};
 #[derive(Debug, Default)]
 pub struct App {
     pub projects: Vec<Project>,
-    pub display_projects: Vec<Project>,
     pub items: ListState,
     pub searching: bool,
     pub search_text: String,
@@ -33,11 +32,9 @@ impl App {
         items.select(Some(0));
 
         let projects = Project::get_from_path(parent_folder)?;
-        let display_projects = projects.clone();
 
         Ok(App {
             projects,
-            display_projects,
             items,
             searching: false,
             search_text: "".to_string(),
@@ -135,8 +132,8 @@ impl App {
                 if self.search_text.is_empty() {
                     true
                 } else {
-                    if let Some(ScoreResult { score, ranges: _ }) = Fuse::default()
-                        .search_text_in_string(&self.search_text[..], p)
+                    if let Some(ScoreResult { score, ranges: _ }) =
+                        Fuse::default().search_text_in_string(&self.search_text[..], p)
                     {
                         score > 0.3
                     } else {
@@ -149,7 +146,7 @@ impl App {
 
     pub fn apply(&mut self) {
         if let Some(index) = self.items.selected() {
-            if let Some(project) = self.display_projects.get(index) {
+            if let Some(project) = self.projects.get(index) {
                 self.quit_output = Some(project.get_path());
                 self.should_quit = true;
             }
