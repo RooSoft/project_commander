@@ -125,15 +125,21 @@ impl App {
     }
 
     pub fn get_filtered_projects_list(&mut self) -> Vec<String> {
-        self.projects
+        self.filter_projects_by_search_text()
             .iter()
             .map(|p| p.to_string())
+            .collect::<Vec<String>>()
+    }
+
+    fn filter_projects_by_search_text(&self) -> Vec<&Project> {
+        self.projects
+            .iter()
             .filter(|p| {
                 if self.search_text.is_empty() {
                     true
                 } else {
                     if let Some(ScoreResult { score, ranges: _ }) =
-                        Fuse::default().search_text_in_string(&self.search_text[..], p)
+                        Fuse::default().search_text_in_string(&self.search_text[..], &p.to_string()[..])
                     {
                         score > 0.3
                     } else {
@@ -141,7 +147,7 @@ impl App {
                     }
                 }
             })
-            .collect::<Vec<String>>()
+            .collect::<Vec<&Project>>()
     }
 
     pub fn apply(&mut self) {
