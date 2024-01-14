@@ -152,7 +152,7 @@ impl App {
 
     pub fn apply(&mut self) {
         if let Some(index) = self.items.selected() {
-            if let Some(project) = self.projects.get(index) {
+            if let Some(project) = self.filter_projects_by_search_text().get(index) {
                 self.quit_output = Some(project.get_path());
                 self.should_quit = true;
             }
