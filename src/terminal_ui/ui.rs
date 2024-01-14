@@ -4,6 +4,8 @@ use ratatui::{
     widgets::{Block, BorderType, Borders, List, Paragraph},
 };
 
+use fuse_rust::{Fuse, ScoreResult};
+
 use crate::terminal_ui::app::App;
 
 pub fn render(app: &mut App, f: &mut Frame) {
@@ -19,6 +21,19 @@ pub fn render(app: &mut App, f: &mut Frame) {
         .projects
         .iter()
         .map(|p| p.to_string())
+        .filter(|p| {
+            if app.search_text.is_empty() {
+                true
+            } else {
+                if let Some(ScoreResult { score, ranges: _ }) =
+                    Fuse::default().search_text_in_string(&app.search_text[..], p)
+                {
+                    score > 0.3
+                } else {
+                    false
+                }
+            }
+        })
         .collect::<Vec<String>>();
 
     let search_text = format!(" {}", &app.search_text);

@@ -210,6 +210,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "fuse-rust"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b38318e0ccdb981874116e30c87ef64ceb9934dbc78d960c365788f7584ca74"
+
+[[package]]
 name = "getrandom"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -551,6 +557,7 @@ dependencies = [
  "anyhow",
  "color-eyre",
  "crossterm",
+ "fuse-rust",
  "git2",
  "humantime",
  "ratatui",
