@@ -13,6 +13,8 @@ use crate::terminal_ui::{
     update::update,
 };
 
+use fuse_rust::{Fuse, ScoreResult};
+
 #[derive(Debug, Default)]
 pub struct App {
     pub projects: Vec<Project>,
@@ -125,9 +127,29 @@ impl App {
         }
     }
 
+    pub fn get_filtered_projects_list(&mut self) -> Vec<String> {
+        self.projects
+            .iter()
+            .map(|p| p.to_string())
+            .filter(|p| {
+                if self.search_text.is_empty() {
+                    true
+                } else {
+                    if let Some(ScoreResult { score, ranges: _ }) = Fuse::default()
+                        .search_text_in_string(&self.search_text[..], p)
+                    {
+                        score > 0.3
+                    } else {
+                        false
+                    }
+                }
+            })
+            .collect::<Vec<String>>()
+    }
+
     pub fn apply(&mut self) {
         if let Some(index) = self.items.selected() {
-            if let Some(project) = self.projects.get(index) {
+            if let Some(project) = self.display_projects.get(index) {
                 self.quit_output = Some(project.get_path());
                 self.should_quit = true;
             }
