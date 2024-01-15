@@ -22,7 +22,7 @@
         naersk' = pkgs.callPackage naersk { };
       in 
       {
-        defaultPackage = (import ./default.nix { inherit pkgs nixpkgs flake-utils naersk'; });
+        defaultPackage = (import ./default.nix { inherit pkgs naersk'; });
       }
     );
 }
