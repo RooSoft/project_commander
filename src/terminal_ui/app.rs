@@ -7,10 +7,13 @@ use std::error::Error;
 use ratatui::widgets::ListState;
 use ratatui::{backend::CrosstermBackend, Terminal};
 
-use crate::terminal_ui::{
-    event::{Event, EventHandler},
-    tui::Tui,
-    update::update,
+use crate::{
+    configuration::Configuration,
+    terminal_ui::{
+        event::{Event, EventHandler},
+        tui::Tui,
+        update::update,
+    }
 };
 
 use fuse_rust::{Fuse, ScoreResult};
@@ -27,11 +30,11 @@ pub struct App {
 
 impl App {
     /// Constructs a new instance of [`App`].
-    pub fn new(parent_folder: &str) -> Result<Self, Box<dyn Error>> {
+    pub fn new(configuration: &Configuration) -> Result<Self, Box<dyn Error>> {
         let mut items = ListState::default();
         items.select(Some(0));
 
-        let projects = Project::get_from_path(parent_folder)?;
+        let projects = Project::get_from_path(configuration.parent_folder())?;
 
         Ok(App {
             projects,
@@ -43,8 +46,8 @@ impl App {
         })
     }
 
-    pub fn run(parent_folder: &str) -> Result<Option<String>, Box<dyn Error>> {
-        let mut app = Self::new(parent_folder)?;
+    pub fn run(configuration: &Configuration) -> Result<Option<String>, Box<dyn Error>> {
+        let mut app = Self::new(configuration)?;
 
         // Initialize the terminal user interface.
         let backend = CrosstermBackend::new(std::io::stderr());

@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let configuration = get_configuration();
 
-    if let Some(output) = App::run(configuration.parent_folder())? {
+    if let Some(output) = App::run(&configuration)? {
         println!("{}", output);
     } else {
         println!(".");
