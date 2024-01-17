@@ -12,3 +12,8 @@ pub struct Args {
     name: Option<String>,
 }
 
+impl Args {
+    pub fn name(&self) -> Option<String> {
+        self.name.clone()
+    }
+}

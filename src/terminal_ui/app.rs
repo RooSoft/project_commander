@@ -46,6 +46,16 @@ impl App {
         })
     }
 
+    pub fn search_project(search_text: &str, configuration: &Configuration) -> Result<Option<String>, Box<dyn Error>> {
+        let mut app = Self::new(configuration)?;
+        app.search_text = search_text.to_string();
+
+        match app.get_filtered_projects_list().first() {
+            Some(project_name) => Ok(Some(project_name.clone())),
+            None => Ok(None)
+        }
+    }
+
     pub fn run(configuration: &Configuration) -> Result<Option<String>, Box<dyn Error>> {
         let mut app = Self::new(configuration)?;
 

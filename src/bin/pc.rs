@@ -5,15 +5,25 @@ use color_eyre::Result;
 use clap::Parser;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let _args = Args::parse();
+    let args = Args::parse();
 
     let configuration = get_configuration();
 
-    if let Some(output) = App::run(&configuration)? {
-        println!("{}", output);
+    let output = if let Some(name) = args.name() {
+        match App::search_project(&name, &configuration) {
+            Ok(None) => ".".to_string(),
+            Ok(Some(project_name)) => format!("{}", project_name),
+            _ => ".".to_string()
+        }
     } else {
-        println!(".");
-    }
+        if let Some(output) = App::run(&configuration)? {
+            format!("{}", output)
+        } else {
+            format!(".")
+        }
+    };
+
+    println!("{}", &output);
 
     Ok(())
 }
