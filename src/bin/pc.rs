@@ -1,8 +1,12 @@
-use project_commander::{configuration::Configuration, terminal_ui::app::App};
+use project_commander::{cli::args::Args, configuration::Configuration, terminal_ui::app::App};
 
 use color_eyre::Result;
 
+use clap::Parser;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let _args = Args::parse();
+
     let configuration = get_configuration();
 
     if let Some(output) = App::run(configuration.parent_folder())? {
