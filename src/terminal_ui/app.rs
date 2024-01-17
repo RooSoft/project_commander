@@ -50,10 +50,14 @@ impl App {
         let mut app = Self::new(configuration)?;
         app.search_text = search_text.to_string();
 
-        match app.get_filtered_projects_list().first() {
-            Some(project_name) => Ok(Some(project_name.clone())),
-            None => Ok(None)
-        }
+        let project = app.filter_projects_by_search_text().first().copied();
+
+        let path = match project {
+            Some(p) => Some(p.get_path()),
+            None => None
+        };
+
+        Ok(path)
     }
 
     pub fn run(configuration: &Configuration) -> Result<Option<String>, Box<dyn Error>> {
