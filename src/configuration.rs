@@ -44,9 +44,11 @@ impl Configuration {
             parent_folder: parent_folder.into(),
         };
 
-        let filename = "/Users/roo/.config/project_commander/config.toml";
+        let folder = "/Users/roo/.config/project_commander";
+        let filename = format!("{}/config.toml", folder);
         let contents = toml::to_string(&configuration).unwrap();
 
+        let _ = fs::create_dir_all(folder).unwrap();
         let mut file = fs::File::create(filename)?;
         file.write_all(contents.as_bytes())?;
 
